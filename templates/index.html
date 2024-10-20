@@ -10,6 +10,9 @@
         }
       }
     </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
 
   <body>
@@ -33,103 +36,16 @@
       </div>
 
       <div class="flex-grow" id="color-selector"></div>
+
       <div class="absolute hue-rotate-180 border-2 rounded-full h-8 shadow w-8" id="color-pin" style="visibility:hidden"></div>
     </div>
 
     <div id="yarn-results"></div>
 
-    <script type="application/javascript" src="/script/index.js"></script>
+    <script type="module" src="/script/index.js"></script>
     <script type="module">
-    import {
-      deHexify,
-      hexify,
-      hsl,
-      hslToRgb,
-      hslToXY,
-      rgbToHsl,
-      xyToHSL,
-    } from "/script/colors.js";
-    
-    const input = document.getElementById("color-input");
-    const selector = document.getElementById("color-selector");
-    const pin = document.getElementById("color-pin");
-
-    let colorPinned = false;
-    let hue = 0;
-    let saturation = 100;
-    let lightness = 100;
-
-
-    function setBackgroundColor(backgroundColor) {
-      document.getElementById("color-input").value = backgroundColor;
-      document.getElementById("color-input-text").innerHTML = backgroundColor;
-      selector.style = `background-color: ${backgroundColor}`;
-    }
-
-    if (!!window.location.hash) {
-      setBackgroundColor(window.location.hash);
-      const [r, g, b] = deHexify(window.location.hash);
-      const [h, s, l] = rgbToHsl(r, g, b);
-      const [x, y] = hslToXY(selector, h, s, l);
-      showPin(x, y);
-    }
-
-    function hidePin() {
-      pin.style = `visibility:hidden;`;
-    }
-
-    async function showPin(x, y) {
-      const rect = pin.getBoundingClientRect();
-      const midX = Math.round(x - (rect.right - rect.left) / 2);
-      const midY = Math.round(y - (rect.bottom - rect.top) / 2);
-      pin.style = `visibility:visible; left: ${midX}px; top: ${midY}px;`;
-
-      window.location.hash = input.value;
-      const res = await fetch(`/yarns/search/${input.value.slice(1)}`)
-      document.getElementById("yarn-results").innerHTML = await res.text();
-      colorPinned = true;
-    }
-
-    function onMouseMove(mouseX, mouseY) {
-      const [h, s, l] = xyToHSL(selector, mouseX, mouseY);
-      setBackgroundColor(hsl(h, s, l));
-    }
-
-    function onMouseClick(mouseX, mouseY) {
-      onMouseMove(mouseX, mouseY);
-      showPin(mouseX, mouseY);
-    }
-
-
-    selector.addEventListener("mousemove", function (e) {
-      if (colorPinned) {
-        return;
-      }
-      onMouseMove(e.pageX, e.pageY);
-    });
-
-    selector.addEventListener("click", function (e) {
-      onMouseClick(e.pageX, e.pageY);
-    });
-
-    pin.addEventListener("click", function (e) {
-      colorPinned = false;
-      hidePin();
-    });
-
-    pin.addEventListener("mousedown", function (e) {
-      onMouseMove(e.pageX, e.pageY);
-    });
-
-    input.addEventListener("input", function (e) {
-      setBackgroundColor(e.target.value);
-
-      const [r, g, b] = deHexify(e.target.value);
-      const [h, s, l] = rgbToHsl(r, g, b);
-      const [x, y] = hslToXY(selector, h, s, l);
-      showPin(x, y);
-    });
-
-</script>
+      import { main } from "/script/index.js";
+      main();
+    </script>
   </body>
 </html>

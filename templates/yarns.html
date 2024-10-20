@@ -1,0 +1,11 @@
+<div class="grid grid-cols-4 p-2">
+  {% for yarn in yarns %}
+  <div class="border flex flex-row rounded m-2 p-2 space-x-2">
+    <img class="border" src="data:image/jpeg;base64,{{ yarn_data[yarn.id].image | safe }}" width=50 height=50></img>
+    <div>
+      <a class="font-semibold" href="{{ yarn.url }}">{{yarn.name}}</a>
+      <div>{{ yarn_data[yarn.id].distance }}</div>
+    </div>
+  </div>
+  {% endfor %}
+</div>

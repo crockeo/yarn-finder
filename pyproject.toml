@@ -1,0 +1,25 @@
+[project]
+name = "yarn-finders"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "aiosqlite",
+  "alembic",
+  "fastapi",
+  "hsluv",
+  "jinja2",
+  "pydantic",
+  "sqlalchemy[asyncio]",
+  "uvicorn",
+]
+
+[tool.uv]
+dev-dependencies = [
+  "faker",
+  "faker-commerce",
+  "pillow",
+  "pytest",
+  "pytest-asyncio",
+]

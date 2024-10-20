@@ -34,15 +34,15 @@ def _generate_jpeg(r: float, g: float, b: float) -> bytes:
 
 def _generate_random_yarn(faker: Faker) -> Yarn:
     r, g, b = (random.random(), random.random(), random.random())
-    x, y, z = hsluv.rgb_to_xyz((r, g, b))
+    h, s, l = hsluv.rgb_to_hsluv((r, g, b))
     jpeg = _generate_jpeg(r, g, b)
     return Yarn(
         name=faker.ecommerce_name(),
         url=faker.uri(),
         image=jpeg,
-        x=x,
-        y=y,
-        z=z,
+        hue=h,
+        saturation=s,
+        lightness=l,
     )
 
 

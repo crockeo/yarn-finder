@@ -12,7 +12,6 @@ class Yarn(Base):
     image: Mapped[bytes]
 
     # Using HSLuv as the color space: https://www.hsluv.org/
-    # X/Y/Z here so we can compute Euclidian distance
-    x: Mapped[float]
-    y: Mapped[float]
-    z: Mapped[float]
+    hue: Mapped[float]
+    saturation: Mapped[float]
+    lightness: Mapped[float]

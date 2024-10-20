@@ -1,6 +1,7 @@
 from base64 import b64encode
 from pathlib import Path
 
+import hsluv
 from fastapi import FastAPI, HTTPException
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.exc import NoResultFound
@@ -24,7 +25,7 @@ async def search_yarns(rgb: str) -> HTMLResponse:
     async with database.create_session() as sess:
         yarns, pagination_token = await services.get_yarns_close_to(
             sess,
-            rgb,
+            f"#{rgb}",
             page_size=8,
         )
     return env.TemplateResponse(
@@ -34,10 +35,13 @@ async def search_yarns(rgb: str) -> HTMLResponse:
             "yarns": [yarn for yarn, _ in yarns],
             "yarn_data": {
                 yarn.id: {
-                    "distance": distance,
+                    "match_pct": match_pct,
                     "image": b64encode(yarn.image).decode(),
+                    "hex": hsluv.hsluv_to_hex(
+                        (yarn.hue, yarn.saturation, yarn.lightness)
+                    ),
                 }
-                for yarn, distance in yarns
+                for yarn, match_pct in yarns
             },
         },
     )

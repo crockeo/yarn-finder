@@ -1,11 +1,15 @@
+import math
 from base64 import b64decode, b64encode
 
-from hsluv import hex_to_hsluv, hex_to_rgb, rgb_to_xyz
+import hsluv
 from sqlalchemy import Label, func
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from yarn_finder.models import Yarn
+
+
+_MAX_DISTANCE = math.sqrt(360**2 + 100**2 + 100**2)
 
 
 async def get_yarns_close_to(
@@ -15,11 +19,14 @@ async def get_yarns_close_to(
     pagination_token: str | None = None,
     page_size: int = 30,
 ) -> tuple[list[tuple[Yarn, float]], str | None]:
-    xyz = rgb_to_xyz(hex_to_rgb(rgb))
+    if not rgb.startswith("#") or not len(rgb) == 7:
+        raise ValueError(f"Invalid RGB color code: {rgb}")
+    hsl = hsluv.hex_to_hsluv(rgb)
+    print(hsl)
     query = (
         select(
             Yarn,
-            _distance(xyz).label("distance"),
+            _distance(hsl).label("distance"),
         )
         .order_by("distance")
         .limit(page_size + 1)
@@ -36,16 +43,16 @@ async def get_yarns_close_to(
         max_id = yarns[-1][0].id
         next_pagination_token = b64encode(str(max_id).encode()).decode()
 
-    yarns = [(yarn, distance) for yarn, distance in yarns]
+    yarns = [(yarn, 1 - distance / _MAX_DISTANCE) for yarn, distance in yarns]
     return yarns, next_pagination_token
 
 
-def _distance(xyz: tuple[int, int, int]) -> Label:
-    x, y, z = xyz
+def _distance(hsl: tuple[float, float, float]) -> Label:
+    hue, saturation, lightness = hsl
     return func.sqrt(
-        func.power(Yarn.x - x, 2)
-        + func.power(Yarn.y - y, 2)
-        + func.power(Yarn.z - z, 2)
+        func.power(Yarn.hue - hue, 2)
+        + func.power(Yarn.saturation - saturation, 2)
+        + func.power(Yarn.lightness - lightness, 2)
     ).label("distance")
 
 

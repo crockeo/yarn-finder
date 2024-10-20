@@ -47,18 +47,8 @@
       setBackgroundColor(window.location.hash);
       const [r, g, b] = deHexify(window.location.hash);
       const [h, s, l] = rgbToHsl(r, g, b);
-
-      const xPct = h / 360;
-      const yPct = 1.0 - s / 100;
-
-      const rect = selector.getBoundingClientRect();
-
-      console.log(xPct, rect.right - rect.left);
-
-      const x = xPct * (rect.right - rect.left) + rect.left;
-      const y = yPct * (rect.bottom - rect.top) + rect.top;
+      const [x, y] = hslToXY(h, s, l);
       showPin(x, y);
-      colorPinned = true;
     }
 
     function hsl(hue, saturation, lightness) {
@@ -71,7 +61,6 @@
     }
 
     async function showPin(x, y) {
-      console.log(x, y);
       const rect = pin.getBoundingClientRect();
       const midX = Math.round(x - (rect.right - rect.left) / 2);
       const midY = Math.round(y - (rect.bottom - rect.top) / 2);
@@ -80,21 +69,15 @@
       window.location.hash = input.value;
       const res = await fetch(`/yarns/search/${input.value.slice(1)}`)
       document.getElementById("yarn-results").innerHTML = await res.text();
+      colorPinned = true;
     }
 
     function onMouseMove(mouseX, mouseY) {
-      const rect = selector.getBoundingClientRect();
-
-      const xPct = (mouseX - rect.left) / (rect.right - rect.left);
-      const yPct = (mouseY - rect.top) / (rect.bottom - rect.top);
-
-      const hue = 360 * xPct;
-      const saturation = 100 - (100 * yPct);
-      setBackgroundColor(hsl(Math.round(hue), Math.round(saturation), 50));
+      const [h, s, l] = xyToHSL(mouseX, mouseY);
+      setBackgroundColor(hsl(h, s, l));
     }
 
     function onMouseClick(mouseX, mouseY) {
-      colorPinned = true;
       onMouseMove(mouseX, mouseY);
       showPin(mouseX, mouseY);
     }
@@ -150,6 +133,25 @@
       return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
     }
 
+    function hslToXY(h, s, l) {
+      const xPct = h / 360;
+      const yPct = 1.0 - s / 100;
+
+      const rect = selector.getBoundingClientRect();
+      const x = xPct * (rect.right - rect.left) + rect.left;
+      const y = yPct * (rect.bottom - rect.top) + rect.top;
+      return [x, y];
+    }
+
+    function xyToHSL(x, y) {
+      const rect = selector.getBoundingClientRect();
+      const xPct = (x - rect.left) / (rect.right - rect.left);
+      const yPct = (y - rect.top) / (rect.bottom - rect.top);
+      const hue = 360 * xPct;
+      const saturation = 100 - (100 * yPct);
+      return [hue, saturation, 50];
+    }
+
     function deHexify(rgb) {
       const r = rgb.slice(1, 3);
       const g = rgb.slice(3, 5);
@@ -177,6 +179,15 @@
       onMouseMove(e.pageX, e.pageY);
     });
 
-    </script>
+    input.addEventListener("input", function (e) {
+      setBackgroundColor(e.target.value);
+
+      const [r, g, b] = deHexify(e.target.value);
+      const [h, s, l] = rgbToHsl(r, g, b);
+      const [x, y] = hslToXY(h, s, l);
+      showPin(x, y);
+    });
+
+</script>
   </body>
 </html>

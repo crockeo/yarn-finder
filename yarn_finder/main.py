@@ -1,5 +1,4 @@
 import os
-import sys
 
 import uvicorn
 
@@ -12,7 +11,7 @@ def main() -> None:
                 "yarn_finder.wsgi:app",
                 host="127.0.0.1",
                 port=8080,
-                reload=sys.platform == "darwin",
+                reload=True,
             )
 
         case "prod":

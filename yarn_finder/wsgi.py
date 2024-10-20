@@ -3,6 +3,7 @@ from pathlib import Path
 
 import hsluv
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.exc import NoResultFound
 from starlette.responses import HTMLResponse, Response
@@ -58,3 +59,6 @@ async def get_yarn_image(id: int) -> Response:
         content=yarn.image,
         media_type="image/jpeg",
     )
+
+
+app.mount("/", StaticFiles(directory="static"), name="static")

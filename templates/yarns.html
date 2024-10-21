@@ -1,7 +1,7 @@
 <div class="p-2 space-y-2">
   {% for yarn in yarns %}
     {% set data = yarn_data[yarn.id] %}
-    <div class="border flex rounded md:-ml-6">
+    <div class="border flex rounded-lg md:-ml-6">
       <img class="h-12 rounded-l-lg w-12" src="data:image/jpeg;base64,{{ data.image | safe }}" alt="Yarn image">
       <div class="flex flex-col justify-between flex-grow min-w-0 px-2 py-1">
         <div class="overflow-hidden">

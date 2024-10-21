@@ -1,17 +1,21 @@
-<div class="p-2 space-y-2">
-  {% for yarn in yarns %}
-    {% set data = yarn_data[yarn.id] %}
-    <div class="border flex rounded-lg md:-ml-6">
-      <img class="h-12 rounded-l-lg w-12" src="data:image/jpeg;base64,{{ data.image | safe }}" alt="Yarn image">
-      <div class="flex flex-col justify-between flex-grow min-w-0 px-2 py-1">
-        <div class="overflow-hidden">
-          <a class="font-semibold block truncate" href="{{ yarn.url }}">{{yarn.name}}</a>
-        </div>
-        <div class="flex flex-row space-x-2 text-xs">
-          <pre><code>{{ data.hex }}</code></pre>
-          <div class="italic">{{ "%.2f" | format(data.match_pct * 100) }}% Match</div>
-        </div>
+{% for yarn in yarns %}
+  {% set data = yarn_data[yarn.id] %}
+  <a
+    class="border flex rounded-lg"
+    href="{{ yarn.url }}"
+    {% if loop.last and next_offset %}
+      hx-get="/yarns/search/{{ request_hex }}?offset={{ next_offset }}"
+      hx-trigger="intersect once"
+      hx-swap="afterend"
+    {% endif %}
+  >
+    <img class="h-12 rounded-l-lg w-12" src="data:image/jpeg;base64,{{ data.image | safe }}" alt="Yarn image">
+    <div class="flex flex-col justify-between flex-grow min-w-0 px-2 py-1">
+      <div class="font-semibold truncate overflow-hidden">{{yarn.name}}</div>
+      <div class="flex flex-row space-x-2 text-xs">
+        <pre><code>{{ data.hex }}</code></pre>
+        <div class="italic">{{ "%.2f" | format(data.match_pct * 100) }}% Match</div>
       </div>
     </div>
-  {% endfor %}
-</div>
+  </div>
+{% endfor %}

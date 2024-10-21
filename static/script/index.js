@@ -33,8 +33,7 @@ async function showPin(x, y) {
 
   const input = colorInput();
   window.location.hash = input.value;
-  const res = await fetch(`/yarns/search/${input.value.slice(1)}`)
-  document.getElementById("yarn-results").innerHTML = await res.text();
+  htmx.ajax("GET", `/yarns/search/${input.value.slice(1)}`, "#yarn-results");
 }
 
 function onMouseMove(selector, mouseX, mouseY) {

@@ -20,32 +20,39 @@ async def index() -> HTMLResponse:
 
 
 @app.get("/yarns/search/{rgb}")
-async def search_yarns(rgb: str) -> HTMLResponse:
+async def search_yarns(rgb: str, *, offset: int | None = None) -> HTMLResponse:
     if len(rgb) != 6:
         raise HTTPException(400, "Malformed RGB")
     async with database.create_session() as sess:
-        yarns, pagination_token = await services.get_yarns_close_to(
+        yarns, next_offset = await services.get_yarns_close_to(
             sess,
             f"#{rgb}",
-            page_size=8,
+            offset=offset,
+            page_size=15,
         )
-    return env.TemplateResponse(
-        "yarns.html",
-        {
-            "request": {},
-            "yarns": [yarn for yarn, _ in yarns],
-            "yarn_data": {
-                yarn.id: {
-                    "match_pct": match_pct,
-                    "image": b64encode(yarn.image).decode(),
-                    "hex": hsluv.hsluv_to_hex(
-                        (yarn.hue, yarn.saturation, yarn.lightness)
-                    ),
-                }
-                for yarn, match_pct in yarns
+
+    if yarns:
+        return env.TemplateResponse(
+            "yarns.html",
+            {
+                "next_offset": next_offset,
+                "request": {},
+                "request_hex": rgb,
+                "yarns": [yarn for yarn, _ in yarns],
+                "yarn_data": {
+                    yarn.id: {
+                        "match_pct": match_pct,
+                        "image": b64encode(yarn.image).decode(),
+                        "hex": hsluv.hsluv_to_hex(
+                            (yarn.hue, yarn.saturation, yarn.lightness)
+                        ),
+                    }
+                    for yarn, match_pct in yarns
+                },
             },
-        },
-    )
+        )
+
+    return env.TemplateResponse("no_more_yarns.html", {"request": {}})
 
 
 @app.get("/yarns/{id}/image")

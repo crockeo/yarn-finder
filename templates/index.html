@@ -15,6 +15,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
+    #top-bar {
+      height: 5vh;
+    }
+    
     @media only screen and (max-width: 768px) {
       #color-selector {
         height: 100vw;
@@ -22,51 +26,52 @@
       }
 
       #yarn-results {
+        height: calc(95vh - 100vw);
+        overflow-y: scroll;
       }
     }
 
     @media only screen and (min-width: 768px) {
       #color-selector {
-        flex-grow: 1;
-        width: 75vw;
+        height: 95vh;
       }
 
       #yarn-results {
-        width: 25vw;
+        height: 95vh;
+        overflow-y: scroll;
       }
     }
     </style>
   </head>
 
-  <body>
-    <div class="flex flex-col md:h-screen w-screen">
-      <div class="align-middle flex flex-row justify-between p-2">
-        <div class="align-middle flex flex-row space-x-2">
-          <img class="h-6 w-h" src="/favicon.ico" />
-          <span class="font-bold">Yarn Finder</span>
-        </div>
-
-        <div class="align-middle flex flex-row space-x-2">
-          <div class="font-bold">Color:</div>
-          <pre><code id="color-input-text"></code></pre>
-          <input id="color-input" type="color" />
-        </div>
-
-        <a
-          href="https://github.com/crockeo/yarn-finder"
-          target="_blank"
-        >
-          <img class="h-6 w-6" src="/github.png" />
-        </a>
+  <body class="w-screen h-screen overflow-hidden">
+    <div class="align-middle flex flex-row justify-between p-2 w-screen" id="top-bar">
+      <div class="align-middle flex flex-row space-x-2">
+        <img class="h-6 w-6" src="/favicon.ico" />
+        <span class="font-bold">Yarn Finder</span>
       </div>
 
-      <div class="flex h-screen flex-col w-screen md:flex-row">
-        <div id="color-selector"></div>
-        <div id="yarn-results"></div>
+      <div class="align-middle flex flex-row space-x-2">
+        <div class="font-bold">Color:</div>
+        <pre><code id="color-input-text"></code></pre>
+        <input id="color-input" type="color" />
       </div>
 
-      <div class="absolute hue-rotate-180 border-2 rounded-full h-8 shadow w-8" id="color-pin" style="visibility:hidden"></div>
+      <a
+        href="https://github.com/crockeo/yarn-finder"
+        target="_blank"
+      >
+        <img class="h-6 w-6" src="/github.png" />
+      </a>
     </div>
+
+
+    <div class="grid grid-cols-1 md:grid-cols-7">
+      <div class="md:col-span-5" id="color-selector"></div>
+      <div class="md:-ml-8 p-2 space-y-2 md:col-span-2" id="yarn-results"></div>
+    </div>
+  
+    <div class="absolute hue-rotate-180 border-2 rounded-full h-8 shadow w-8" id="color-pin" style="visibility:hidden"></div>
 
     <script type="module" src="/script/index.js"></script>
     <script type="module">

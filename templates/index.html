@@ -15,17 +15,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-    @media only screen and (max-width: 640px) {
+    @media only screen and (max-width: 768px) {
       #color-selector {
         height: 100vw;
         width: 100vw;
       }
+
+      #yarn-results {
+      }
     }
 
-    @media only screen and (min-width: 640px) {
+    @media only screen and (min-width: 768px) {
       #color-selector {
         flex-grow: 1;
-        width: 100vw;
+        width: 75vw;
+      }
+
+      #yarn-results {
+        width: 25vw;
       }
     }
     </style>
@@ -51,12 +58,13 @@
         </div>
       </div>
 
-      <div id="color-selector"></div>
+      <div class="flex h-screen flex-col w-screen md:flex-row">
+        <div id="color-selector"></div>
+        <div id="yarn-results"></div>
+      </div>
 
       <div class="absolute hue-rotate-180 border-2 rounded-full h-8 shadow w-8" id="color-pin" style="visibility:hidden"></div>
     </div>
-
-    <div id="yarn-results"></div>
 
     <script type="module" src="/script/index.js"></script>
     <script type="module">

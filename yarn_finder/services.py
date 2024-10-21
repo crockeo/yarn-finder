@@ -43,7 +43,7 @@ async def get_yarns_close_to(
         for yarn, distance in yarns
         if distance / _MAX_DISTANCE <= 0.10
     ]
-    return yarns, offset + page_size
+    return yarns, offset + page_size + 1
 
 
 def _distance(hsl: tuple[float, float, float]) -> Label:

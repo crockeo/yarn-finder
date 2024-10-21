@@ -85,7 +85,7 @@ export function main() {
   });
 
   input.addEventListener("input", function(e) {
-    setBackgroundColor(e.target.value);
+    setBackgroundColor(selector, e.target.value);
 
     const [r, g, b] = deHexify(e.target.value);
     const [h, s, l] = rgbToHsl(r, g, b);

@@ -1,12 +1,14 @@
-<div class="grid grid-cols-4 p-2">
+<div class="grid grid-cols-1 md:grid-cols-4 p-2">
   {% for yarn in yarns %}
   {% set data = yarn_data[yarn.id] %}
   <div class="border flex flex-row rounded m-2 p-2 space-x-2">
     <img class="border" src="data:image/jpeg;base64,{{ data.image | safe }}" width=50 height=50></img>
     <div>
-      <a class="font-semibold" href="{{ yarn.url }}">{{yarn.name}}</a>
-      <pre><code>{{ data.hex }}</code></pre>
-      <div>{{ "%.2f" | format(data.match_pct * 100) }}% Match</div>
+      <a class="font-semibold text-ellipsis" href="{{ yarn.url }}">{{yarn.name}}</a>
+      <div class="flex flex-row space-x-2 text-xs">
+        <pre><code>{{ data.hex }}</code></pre>
+        <div class="italic">{{ "%.2f" | format(data.match_pct * 100) }}% Match</div>
+      </div>
     </div>
   </div>
   {% endfor %}

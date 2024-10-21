@@ -13,10 +13,26 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+    @media only screen and (max-width: 640px) {
+      #color-selector {
+        height: 100vw;
+        width: 100vw;
+      }
+    }
+
+    @media only screen and (min-width: 640px) {
+      #color-selector {
+        flex-grow: 1;
+        width: 100vw;
+      }
+    }
+    </style>
   </head>
 
   <body>
-    <div class="flex flex-col h-screen w-screen">
+    <div class="flex flex-col md:h-screen w-screen">
       <div class="align-middle flex flex-row justify-between p-2">
         <div class="align-middle flex flex-row space-x-2">
           <a
@@ -35,7 +51,7 @@
         </div>
       </div>
 
-      <div class="flex-grow" id="color-selector"></div>
+      <div id="color-selector"></div>
 
       <div class="absolute hue-rotate-180 border-2 rounded-full h-8 shadow w-8" id="color-pin" style="visibility:hidden"></div>
     </div>
